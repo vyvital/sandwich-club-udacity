@@ -19,6 +19,11 @@ public class DetailActivity extends AppCompatActivity {
 
     public static final String EXTRA_POSITION = "extra_position";
     private static final int DEFAULT_POSITION = -1;
+    private TextView desc;
+    private TextView ing;
+    private TextView known;
+    private TextView origin;
+    private Sandwich sandwich;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,10 +31,10 @@ public class DetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_detail);
 
         ImageView ingredientsIv = findViewById(R.id.image_iv);
-        TextView desc = findViewById(R.id.description_tv);
-        TextView ing = findViewById(R.id.ingredients_tv);
-        TextView known = findViewById(R.id.also_known_tv);
-        TextView origin = findViewById(R.id.origin_tv);
+        desc = findViewById(R.id.description_tv);
+        ing = findViewById(R.id.ingredients_tv);
+        known = findViewById(R.id.also_known_tv);
+        origin = findViewById(R.id.origin_tv);
         Intent intent = getIntent();
         if (intent == null) {
             closeOnError();
@@ -43,7 +48,7 @@ public class DetailActivity extends AppCompatActivity {
 
         String[] sandwiches = getResources().getStringArray(R.array.sandwich_details);
         String json = sandwiches[position];
-        Sandwich sandwich = null;
+        sandwich = null;
         try {
             sandwich = JsonUtils.parseSandwichJson(json);
         } catch (JSONException e) {
@@ -60,25 +65,7 @@ public class DetailActivity extends AppCompatActivity {
                 .load(sandwich.getImage())
                 .into(ingredientsIv);
 
-        origin.setText(sandwich.getPlaceOfOrigin());
-        desc.setText(sandwich.getDescription());
-        List<String> list = sandwich.getIngredients();
-        StringBuilder builder = new StringBuilder();
-        for (String ingr : list){
-           builder.append(ingr).append(", ");
-        }
-        builder.setLength(builder.length()-2);
-        ing.setText(builder.toString());
-        list.clear();
-        list = sandwich.getAlsoKnownAs();
-        if (!list.isEmpty()){
-        builder.setLength(0);
-        for (String known2 : list){
-            builder.append(known2).append(", ");
-        }
-        builder.setLength(builder.length()-2);
-        known.setText(builder.toString());
-        }
+
         setTitle(sandwich.getMainName());
     }
 
@@ -88,6 +75,24 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void populateUI() {
-
+        origin.setText(sandwich.getPlaceOfOrigin());
+        desc.setText(sandwich.getDescription());
+        List<String> list = sandwich.getIngredients();
+        StringBuilder builder = new StringBuilder();
+        for (String ingr : list){
+            builder.append(ingr).append(", ");
+        }
+        builder.setLength(builder.length()-2);
+        ing.setText(builder.toString());
+        list.clear();
+        list = sandwich.getAlsoKnownAs();
+        if (!list.isEmpty()){
+            builder.setLength(0);
+            for (String known2 : list){
+                builder.append(known2).append(", ");
+            }
+            builder.setLength(builder.length()-2);
+            known.setText(builder.toString());
+        }
     }
 }
